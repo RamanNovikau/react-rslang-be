@@ -6,7 +6,7 @@ dotenv.config({
 });
 
 module.exports = {
-  PORT: process.env.PORT,
+  PORT: process.env.PORT || process.env.SERVER_PORT,
   NODE_ENV: process.env.NODE_ENV,
   MONGO_CONNECTION_STRING: process.env.MONGO_CONNECTION_STRING,
   AUTH_MODE: process.env.AUTH_MODE === 'true',

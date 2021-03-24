@@ -12,7 +12,7 @@ const UserWordsSchema = new Schema(
       required: false
     }
   },
-  { collection: 'userWords' }
+  { collection: 'words' }
 );
 
 UserWordsSchema.index({ wordId: 1, userId: 1 }, { unique: true });
