@@ -23,8 +23,8 @@ router.route('/').get(async (req, res) => {
 });
 
 router.route('/group/:id').get(async (req, res) => {
-  const word = await wordService.getGroup(req.params.id);
-  res.status(OK).send(word.toResponse());
+  const words = await wordService.getGroup(req.params.id);
+  res.status(OK).send(words.map(word => word.toResponse()));
 });
 
 router.route('/:id').get(async (req, res) => {

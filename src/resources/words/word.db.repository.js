@@ -8,10 +8,8 @@ const getAll = async conditions => {
   return Word.find({ group, page });
 };
 
-const getGroup = async conditions => {
-  const { group } = conditions;
-
-  return Word.find({ group });
+const getGroup = async groupId => {
+  return Word.find({ group: groupId });
 };
 
 const get = async id => {
