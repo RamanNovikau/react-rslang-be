@@ -9,7 +9,7 @@ const errorResponse = errors => {
     status: 'failed',
     errors: errors.map(err => {
       const { path, message } = err;
-      return { path, message };
+      return { field: path[0], message };
     })
   };
 };
