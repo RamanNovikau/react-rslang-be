@@ -11,7 +11,7 @@ const authenticate = async user => {
 
   const isValidated = await bcrypt.compare(user.password, userEntity.password);
   if (!isValidated) {
-    throw new AUTHENTICATION_ERROR();
+    throw new AUTHENTICATION_ERROR("Wrong password or email");
   }
 
   const tokens = await tokenService.getTokens(userEntity._id);
