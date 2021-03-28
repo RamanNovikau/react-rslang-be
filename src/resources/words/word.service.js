@@ -2,12 +2,16 @@ const wordRepo = require('./word.db.repository');
 
 const getAll = async conditions => wordRepo.getAll(conditions);
 
-const getGroup = async conditions => wordRepo.getGroup(conditions);
+const getGroup = async (conditions, count) => {
+  const words = await wordRepo.getGroup(conditions);
+  words.sort(() => Math.random() - 0.5);
+  return words.slice(0, count);
+};
 
-const get = async (wordId, count) => {
+const get = async wordId => {
   const word = await wordRepo.get(wordId);
-  word.sort(() => Math.random() - 0.5);
-  return word.slice(0, count);
+
+  return word;
 };
 
 module.exports = { getAll, get, getGroup };
