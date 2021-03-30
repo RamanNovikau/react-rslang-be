@@ -20,4 +20,11 @@ const get = async id => {
   return word;
 };
 
+// {
+//   from: 'userWords',
+//   let:{ "wI": '$_id',"usI":{"$toObjectId": "605d826946051229947e4eb3"} },
+//   pipeline: [{$match: {$expr: {$eq: ["$wordId", "$$wI"]}}},{$match:{$expr: {$eq: ["$userId", "$$usI"]}}}],
+//   as: 'string'
+// }
+
 module.exports = { getAll, getGroup, get };
