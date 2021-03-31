@@ -6,7 +6,8 @@ const UserWordsSchema = new Schema(
   {
     wordId: { type: mongoose.Schema.Types.ObjectID, required: true },
     userId: { type: mongoose.Schema.Types.ObjectID, required: true },
-    difficulty: { type: String, required: false },
+    status: { type: String, required: true },
+    isLearn: { type: Boolean, required: true },
     optional: {
       type: Object,
       required: false
