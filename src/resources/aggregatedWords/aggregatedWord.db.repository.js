@@ -42,17 +42,18 @@ const pipeline = [
   }
 ];
 
-const getAll = async (userId, group, page, perPage, filter) => {
+const getPages = async (userId, group, page, perPage, filter) => {
   lookup.$lookup.pipeline[0].$match.$expr.$and[0].$eq[1] = mongoose.Types.ObjectId(
     userId
   );
 
   const matches = [];
 
-  if (group || group === 0) {
+  if ((group || group === 0) && (page || page === 0)) {
     matches.push({
       $match: {
-        group
+        group,
+        page
       }
     });
   }
@@ -66,7 +67,43 @@ const getAll = async (userId, group, page, perPage, filter) => {
   }
   const facet = {
     $facet: {
-      paginatedResults: [{ $skip: page * perPage }, { $limit: perPage }],
+      paginatedResults: [{ $limit: perPage }],
+      totalCount: [
+        {
+          $count: 'count'
+        }
+      ]
+    }
+  };
+  return await Word.aggregate([lookup, ...pipeline, ...matches, facet]);
+};
+
+const getAll = async (userId, group, page, perPage, filter) => {
+  lookup.$lookup.pipeline[0].$match.$expr.$and[0].$eq[1] = mongoose.Types.ObjectId(
+    userId
+  );
+
+  const matches = [];
+
+  if ((group || group === 0) && (page || page === 0)) {
+    matches.push({
+      $match: {
+        group,
+        page
+      }
+    });
+  }
+
+  if (filter) {
+    matches.push({
+      $match: {
+        ...filter
+      }
+    });
+  }
+  const facet = {
+    $facet: {
+      paginatedResults: [{ $limit: perPage }],
       totalCount: [
         {
           $count: 'count'
@@ -96,4 +133,4 @@ const get = async (wordId, userId) => {
   return userWord;
 };
 
-module.exports = { getAll, get };
+module.exports = { getAll, get, getPages };
