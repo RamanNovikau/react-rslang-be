@@ -134,3 +134,64 @@ const get = async (wordId, userId) => {
 };
 
 module.exports = { getAll, get, getPages };
+
+// [
+//   {
+//     '$lookup': {
+//       'from': 'userWords',
+//       'let': {
+//         'word_id': '$_id'
+//       },
+//       'pipeline': [
+//         {
+//           '$match': {
+//             '$expr': {
+//               '$and': [
+//                 {
+//                   '$eq': [
+//                     '$userId', new ObjectId('605d826946051229947e4eb3')
+//                   ]
+//                 }, {
+//                   '$eq': [
+//                     '$wordId', '$$word_id'
+//                   ]
+//                 }
+//               ]
+//             }
+//           }
+//         }
+//       ],
+//       'as': 'userWord'
+//     }
+//   }, {
+//     '$unwind': {
+//       'path': '$userWord',
+//       'preserveNullAndEmptyArrays': true
+//     }
+//   }, {
+//     '$unset': [
+//       '__v', 'userWord._id', 'userWord.wordId', 'userWord.userId', 'userWord.__v'
+//     ]
+//   }, {
+//     '$match': {
+//       '$or': [
+//         {
+//           'userWord.status': 'hard'
+//         }, {
+//           'userWord': null
+//         }
+//       ]
+//     }
+//   }, {
+//     '$match': {
+//       'group': 0
+//     }
+//   }, {
+//     '$group': {
+//       '_id': '$page',
+//       'count': {
+//         '$sum': 1
+//       }
+//     }
+//   }
+// ]
