@@ -11,6 +11,9 @@ router.get('/', async (req, res) => {
   const perPage = extractQueryParam(req.query.wordsPerPage, 10);
   const page = extractQueryParam(req.query.page, 0);
   const group = extractQueryParam(req.query.group);
+  const book = extractQueryParam(req.query.book, false);
+
+  console.log(book);
 
   if ((req.query.group && isNaN(group)) || isNaN(page) || isNaN(perPage)) {
     throw new BAD_REQUEST_ERROR(
@@ -25,9 +28,23 @@ router.get('/', async (req, res) => {
     group,
     page,
     perPage,
-    filter
+    filter,
+    book
   );
   res.status(OK).send(words);
+});
+
+router.get('/group', async (req, res) => {
+  const group = extractQueryParam(req.query.group);
+
+  if (req.query.group && isNaN(group)) {
+    throw new BAD_REQUEST_ERROR(
+      'Wrong query parameters: the group, page and words-per-page numbers should be valid integers'
+    );
+  }
+
+  const words = await aggregatedWordsService.getPages(req.userId, group);
+  res.status(OK).send(words.sort((a, b) => a._id - b._id));
 });
 
 router.get('/:wordId', validator(wordId, 'params'), async (req, res) => {
