@@ -8,6 +8,27 @@ const getAll = async conditions => {
   return Word.find({ group, page });
 };
 
+const getAllByGroups = async group => {
+  const ttt = group;
+  console.log(ttt);
+  const words = await Word.aggregate([
+    {
+      $match: {
+        group: ttt
+      }
+    },
+    {
+      $group: {
+        _id: '$page',
+        pages: {
+          $push: '$$ROOT'
+        }
+      }
+    }
+  ]);
+  return words;
+};
+
 const getGroup = async groupId => {
   return Word.find({ group: groupId });
 };
@@ -27,4 +48,4 @@ const get = async id => {
 //   as: 'string'
 // }
 
-module.exports = { getAll, getGroup, get };
+module.exports = { getAll, getGroup, get, getAllByGroups };

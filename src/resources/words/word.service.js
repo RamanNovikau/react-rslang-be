@@ -14,4 +14,10 @@ const get = async wordId => {
   return word;
 };
 
-module.exports = { getAll, get, getGroup };
+const getAllByGroups = async page => {
+  const words = await wordRepo.getAllByGroups(page);
+
+  return words;
+};
+
+module.exports = { getAll, get, getGroup, getAllByGroups };
