@@ -30,7 +30,7 @@ const update = async (wordId, userId, userWord) => {
   const updatedWord = await UserWord.findOneAndUpdate(
     { wordId, userId },
     { $set: userWord },
-    { new: true }
+    { upsert: true, new: true }
   );
   if (!updatedWord) {
     throw new NOT_FOUND_ERROR(ENTITY_NAME, { wordId, userId });
