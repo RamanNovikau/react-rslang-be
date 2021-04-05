@@ -42,6 +42,42 @@ const pipeline = [
   }
 ];
 
+const getAggregatedWordsStat = async (userId, group) => {
+  lookup.$lookup.pipeline[0].$match.$expr.$and[0].$eq[1] = mongoose.Types.ObjectId(
+    userId
+  );
+
+  const matches = [];
+
+  if (group || group === 0) {
+    matches.push({
+      $match: {
+        group
+      }
+    });
+  }
+
+  const pagesFilter = {
+    'userWord.isLearn': true
+  };
+
+  matches.push({
+    $match: {
+      ...pagesFilter
+    }
+  });
+
+  const groupPage = {
+    $group: {
+      _id: null,
+      wrongAnswers: { $sum: '$userWord.options.wrongAnswers' },
+      correctAnswers: { $sum: '$userWord.options.correctAnswers' }
+    }
+  };
+
+  return await Word.aggregate([lookup, ...pipeline, ...matches, groupPage]);
+};
+
 const getPages = async (userId, group) => {
   lookup.$lookup.pipeline[0].$match.$expr.$and[0].$eq[1] = mongoose.Types.ObjectId(
     userId
@@ -155,65 +191,4 @@ const get = async (wordId, userId) => {
   return userWord;
 };
 
-module.exports = { getAll, get, getPages };
-
-// [
-//   {
-//     '$lookup': {
-//       'from': 'userWords',
-//       'let': {
-//         'word_id': '$_id'
-//       },
-//       'pipeline': [
-//         {
-//           '$match': {
-//             '$expr': {
-//               '$and': [
-//                 {
-//                   '$eq': [
-//                     '$userId', new ObjectId('605d826946051229947e4eb3')
-//                   ]
-//                 }, {
-//                   '$eq': [
-//                     '$wordId', '$$word_id'
-//                   ]
-//                 }
-//               ]
-//             }
-//           }
-//         }
-//       ],
-//       'as': 'userWord'
-//     }
-//   }, {
-//     '$unwind': {
-//       'path': '$userWord',
-//       'preserveNullAndEmptyArrays': true
-//     }
-//   }, {
-//     '$unset': [
-//       '__v', 'userWord._id', 'userWord.wordId', 'userWord.userId', 'userWord.__v'
-//     ]
-//   }, {
-//     '$match': {
-//       '$or': [
-//         {
-//           'userWord.status': 'hard'
-//         }, {
-//           'userWord': null
-//         }
-//       ]
-//     }
-//   }, {
-//     '$match': {
-//       'group': 0
-//     }
-//   }, {
-//     '$group': {
-//       '_id': '$page',
-//       'count': {
-//         '$sum': 1
-//       }
-//     }
-//   }
-// ]
+module.exports = { getAll, get, getPages, getAggregatedWordsStat };

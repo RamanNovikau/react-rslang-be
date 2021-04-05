@@ -7,4 +7,7 @@ const getPages = async (userId, group) => wordRepo.getPages(userId, group);
 
 const get = async (wordId, userId) => wordRepo.get(wordId, userId);
 
-module.exports = { getAll, get, getPages };
+const getAggregatedWordsStat = async (userId, group) =>
+  wordRepo.getAggregatedWordsStat(userId, group);
+
+module.exports = { getAll, get, getPages, getAggregatedWordsStat };
