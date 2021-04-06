@@ -70,8 +70,9 @@ const getAggregatedWordsStat = async (userId, group) => {
   const groupPage = {
     $group: {
       _id: null,
-      wrongAnswers: { $sum: '$userWord.options.wrongAnswers' },
-      correctAnswers: { $sum: '$userWord.options.correctAnswers' }
+      count: { $sum: 1 },
+      wrongAnswers: { $sum: '$userWord.optional.wrongAnswers' },
+      correctAnswers: { $sum: '$userWord.optional.correctAnswers' }
     }
   };
 
