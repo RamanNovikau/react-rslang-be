@@ -55,10 +55,12 @@ router.get('/stat', async (req, res) => {
       'Wrong query parameters: the group, page and words-per-page numbers should be valid integers'
     );
   }
+  const filter = req.query.filter ? JSON.parse(req.query.filter) : null;
 
   const stat = await aggregatedWordsService.getAggregatedWordsStat(
     req.userId,
-    group
+    group,
+    filter
   );
   res.status(OK).send(stat);
 });
