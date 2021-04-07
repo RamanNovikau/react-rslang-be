@@ -42,7 +42,7 @@ const pipeline = [
   }
 ];
 
-const getAggregatedWordsStat = async (userId, group) => {
+const getAggregatedWordsStat = async (userId, group, filter) => {
   lookup.$lookup.pipeline[0].$match.$expr.$and[0].$eq[1] = mongoose.Types.ObjectId(
     userId
   );
@@ -57,16 +57,6 @@ const getAggregatedWordsStat = async (userId, group) => {
     });
   }
 
-  const pagesFilter = {
-    'userWord.isLearn': true
-  };
-
-  matches.push({
-    $match: {
-      ...pagesFilter
-    }
-  });
-
   const groupPage = {
     $group: {
       _id: null,
@@ -75,6 +65,14 @@ const getAggregatedWordsStat = async (userId, group) => {
       correctAnswers: { $sum: '$userWord.optional.correctAnswers' }
     }
   };
+
+  if (filter) {
+    matches.push({
+      $match: {
+        ...filter
+      }
+    });
+  }
 
   return await Word.aggregate([lookup, ...pipeline, ...matches, groupPage]);
 };
