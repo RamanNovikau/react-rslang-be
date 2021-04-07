@@ -11,6 +11,9 @@ const StatisticSchema = new Schema(
     learnedWords: {
       type: Number
     },
+    learnedWordsToday: {
+      type: Number
+    },
     optional: {
       type: Object,
       required: false
