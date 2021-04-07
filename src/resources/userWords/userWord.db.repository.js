@@ -27,18 +27,36 @@ const save = async (wordId, userId, userWord) => {
 };
 
 const update = async (wordId, userId, userWord) => {
-  console.log(userWord);
+  let correctAnswers = 0;
+  let wrongAnswers = 0;
+  if (userWord.optional) {
+    if (userWord.optional.correctAnswers) {
+      correctAnswers = userWord.optional.correctAnswers;
+    }
+    if (userWord.optional.wrongAnswers) {
+      wrongAnswers = userWord.optional.wrongAnswers;
+    }
+  }
+  if (userWord.status === 'deleted') {
+    const updatedWord = await UserWord.findOneAndUpdate(
+      { wordId, userId },
+      { $set: userWord },
+      { upsert: true, new: true }
+    );
+
+    return updatedWord;
+  }
   const updatedWord = await UserWord.findOneAndUpdate(
     { wordId, userId },
     {
-      $set: userWord,
-      $inc: { 'optional.wrongAnswers': userWord.optional.wrongAnswers || 0 }
+      $set: { status: userWord.status, isLearn: userWord.isLearn },
+      $inc: {
+        'optional.correctAnswers': correctAnswers,
+        'optional.wrongAnswers': wrongAnswers
+      }
     },
     { upsert: true, new: true }
   );
-  if (!updatedWord) {
-    throw new NOT_FOUND_ERROR(ENTITY_NAME, { wordId, userId });
-  }
 
   return updatedWord;
 };
