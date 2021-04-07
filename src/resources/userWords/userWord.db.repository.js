@@ -27,36 +27,14 @@ const save = async (wordId, userId, userWord) => {
 };
 
 const update = async (wordId, userId, userWord) => {
-  let correctAnswers = 0;
-  let wrongAnswers = 0;
-  if (userWord.optional) {
-    if (userWord.optional.correctAnswers) {
-      correctAnswers = userWord.optional.correctAnswers;
-    }
-    if (userWord.optional.wrongAnswers) {
-      wrongAnswers = userWord.optional.wrongAnswers;
-    }
-  }
-  if (userWord.status === 'deleted') {
-    const updatedWord = await UserWord.findOneAndUpdate(
-      { wordId, userId },
-      { $set: userWord },
-      { upsert: true, new: true }
-    );
-
-    return updatedWord;
-  }
   const updatedWord = await UserWord.findOneAndUpdate(
     { wordId, userId },
-    {
-      $set: { status: userWord.status, isLearn: userWord.isLearn },
-      $inc: {
-        'optional.correctAnswers': correctAnswers,
-        'optional.wrongAnswers': wrongAnswers
-      }
-    },
+    { $set: userWord },
     { upsert: true, new: true }
   );
+  if (!updatedWord) {
+    throw new NOT_FOUND_ERROR(ENTITY_NAME, { wordId, userId });
+  }
 
   return updatedWord;
 };
