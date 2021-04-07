@@ -51,6 +51,10 @@ const schemas = {
         .integer()
         .min(0)
         .max(100000),
+      learnedWordsToday: Joi.number()
+        .integer()
+        .min(0)
+        .max(100000),
       optional: optionalScheme
     }),
   settings: Joi.object()
