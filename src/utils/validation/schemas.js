@@ -9,10 +9,10 @@ const {
 const optionalScheme = Joi.object()
   .max(MAX_OPTIONAL_PROPERTIES)
   .pattern(/.*/, [
+    Joi.date(),
     Joi.string(),
     Joi.number(),
     Joi.boolean(),
-    Joi.date(),
     Joi.object(),
     Joi.array()
   ])

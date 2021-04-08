@@ -9,7 +9,10 @@ const UserWordsSchema = new Schema(
     status: { type: String, required: true },
     isLearn: { type: Boolean, required: true },
     optional: {
-      type: Object,
+      lastLearn: Date,
+      learned: Date,
+      wrongAnswers: Number,
+      correctAnswers: Number,
       required: false
     }
   },
