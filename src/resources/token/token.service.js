@@ -24,7 +24,9 @@ const refresh = async (userId, tokenId) => {
     token,
     refreshToken,
     userId: user._id,
-    name: user.name
+    name: user.name,
+    userImage: user.userImage,
+    nickname: user.nickname
   };
 };
 
