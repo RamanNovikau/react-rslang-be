@@ -3,6 +3,8 @@ const uuid = require('uuid');
 const { AUTHENTICATION_ERROR } = require('../../errors/appErrors');
 
 const tokenRepo = require('./token.db.repository');
+
+const userRepo = require('../users/user.db.repository');
 const {
   JWT_SECRET_KEY,
   JWT_EXPIRE_TIME,
@@ -11,12 +13,21 @@ const {
 } = require('../../common/config');
 
 const refresh = async (userId, tokenId) => {
-  const token = await tokenRepo.get(userId, tokenId);
-  if (Date.now() > token.expire) {
+  const tokenData = await tokenRepo.get(userId, tokenId);
+  if (Date.now() > tokenData.expire) {
     throw new AUTHENTICATION_ERROR('Token is expired');
   }
-
-  return getTokens(userId);
+  const user = await userRepo.get(userId);
+  console.log(user);
+  const { token, refreshToken } = await getTokens(userId);
+  return {
+    token,
+    refreshToken,
+    userId: user._id,
+    name: user.name,
+    userImage: user.userImage,
+    nickname: user.nickname
+  };
 };
 
 const getTokens = async userId => {
