@@ -65,6 +65,33 @@ router.get('/stat', async (req, res) => {
   res.status(OK).send(stat);
 });
 
+router.get('/game', async (req, res) => {
+  const count = extractQueryParam(req.query.count, 30);
+  const page = extractQueryParam(req.query.page, 0);
+  const group = extractQueryParam(req.query.group);
+  const book = extractQueryParam(req.query.book, false);
+
+  console.log(book);
+
+  if ((req.query.group && isNaN(group)) || isNaN(page) || isNaN(count)) {
+    throw new BAD_REQUEST_ERROR(
+      'Wrong query parameters: the group, page and words-per-page numbers should be valid integers'
+    );
+  }
+
+  const filter = req.query.filter ? JSON.parse(req.query.filter) : null;
+
+  const words = await aggregatedWordsService.getGameWords(
+    req.userId,
+    group,
+    page,
+    filter,
+    count,
+    book
+  );
+  res.status(OK).send(words);
+});
+
 router.get('/:wordId', validator(wordId, 'params'), async (req, res) => {
   const word = await aggregatedWordsService.get(req.params.wordId, req.userId);
 
