@@ -4,9 +4,42 @@ const getAll = async (userId, group, page, perPage, filter, book) =>
   wordRepo.getAll(userId, group, page, perPage, filter, book);
 
 const getGameWords = async (userId, group, page, filter, count, book) => {
-  const words = await wordRepo.getAll(userId, group, page, 600, filter, book);
-  words.sort(() => Math.random() - 0.5);
-  return words.slice(0, count);
+  console.log(count);
+  const words = await wordRepo.getGameWords(
+    userId,
+    group,
+    page,
+    600,
+    filter,
+    count,
+    book
+  );
+  console.log(words);
+  return words;
+};
+
+const fillGameWords = async (
+  userId,
+  group,
+  page,
+  perPage,
+  filter,
+  count,
+  book
+) => {
+  const words = await wordRepo.getAll(
+    userId,
+    group,
+    page,
+    perPage,
+    filter,
+    book
+  );
+  words[0].paginatedResults = words[0].paginatedResults.sort(
+    () => Math.random() - 0.5
+  );
+  words[0].paginatedResults = words[0].paginatedResults.slice(0, count);
+  return words;
 };
 
 const getPages = async (userId, group) => wordRepo.getPages(userId, group);
@@ -21,5 +54,6 @@ module.exports = {
   get,
   getPages,
   getAggregatedWordsStat,
-  getGameWords
+  getGameWords,
+  fillGameWords
 };

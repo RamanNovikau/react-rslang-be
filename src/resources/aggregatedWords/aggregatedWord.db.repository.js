@@ -171,6 +171,64 @@ const getAll = async (userId, group, page, perPage, filter, book) => {
   return await Word.aggregate([lookup, ...pipeline, ...matches, facet]);
 };
 
+const getGameWords = async (
+  userId,
+  group,
+  page,
+  perPage,
+  filter,
+  count,
+  book
+) => {
+  lookup.$lookup.pipeline[0].$match.$expr.$and[0].$eq[1] = mongoose.Types.ObjectId(
+    userId
+  );
+
+  const matches = [];
+  let facet = {};
+
+  if (book) {
+    if ((group || group === 0) && (page || page === 0)) {
+      matches.push({
+        $match: {
+          group,
+          page
+        }
+      });
+    }
+    facet = {
+      $facet: {
+        paginatedResults: [{ $limit: perPage }],
+        totalCount: [
+          {
+            $count: 'count'
+          }
+        ]
+      }
+    };
+  } else {
+    if (group || group === 0) {
+      matches.push({
+        $match: {
+          group
+        }
+      });
+    }
+    facet = {
+      $sample: { size: count }
+    };
+  }
+
+  if (filter) {
+    matches.push({
+      $match: {
+        ...filter
+      }
+    });
+  }
+  return await Word.aggregate([lookup, ...pipeline, ...matches, facet]);
+};
+
 const get = async (wordId, userId) => {
   lookup.$lookup.pipeline[0].$match.$expr.$and[0].$eq[1] = mongoose.Types.ObjectId(
     userId
@@ -190,4 +248,10 @@ const get = async (wordId, userId) => {
   return userWord;
 };
 
-module.exports = { getAll, get, getPages, getAggregatedWordsStat };
+module.exports = {
+  getAll,
+  get,
+  getPages,
+  getAggregatedWordsStat,
+  getGameWords
+};
