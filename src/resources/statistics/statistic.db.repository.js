@@ -1,4 +1,5 @@
 const Statistics = require('./statistic.model');
+const Score = require('./score.model');
 const { NOT_FOUND_ERROR } = require('../../errors/appErrors');
 
 const get = async userId => {
@@ -41,4 +42,27 @@ const upsert = async (
 
 const remove = async userId => Statistics.deleteOne({ userId });
 
-module.exports = { get, upsert, remove };
+const upsertScore = async (userId, score) => {
+  const scoreData = await Score.findOneAndUpdate(
+    { userId },
+    {
+      $inc: { score: score.score }
+    },
+    { upsert: true, new: true }
+  );
+  if (!scoreData) {
+    throw new NOT_FOUND_ERROR('score', `userId: ${userId}`);
+  }
+  return scoreData;
+};
+
+const getScore = async userId => {
+  const scoreData = await Score.findOne({ userId });
+  if (!scoreData) {
+    throw new NOT_FOUND_ERROR('score', `userId: ${userId}`);
+  }
+
+  return scoreData;
+};
+
+module.exports = { get, upsert, remove, upsertScore, getScore };

@@ -55,6 +55,14 @@ const schemas = {
         .max(100000),
       optional: optionalScheme
     }),
+  score: Joi.object()
+    .options({ abortEarly: false, allowUnknown: false })
+    .keys({
+      score: Joi.number()
+        .integer()
+        .min(0)
+        .max(100000)
+    }),
   settings: Joi.object()
     .options({ abortEarly: false, allowUnknown: false })
     .keys({

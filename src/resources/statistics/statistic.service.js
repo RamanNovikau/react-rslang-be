@@ -10,6 +10,11 @@ const upsert = async (userId, statistic, learnedWords, todaylLearnedWords) =>
     todaylLearnedWords
   );
 
+const upsertScore = async (userId, score) =>
+  statisticRepo.upsertScore(userId, score);
+
+const getScore = async userId => statisticRepo.getScore(userId);
+
 const remove = async userId => statisticRepo.remove(userId);
 
-module.exports = { get, upsert, remove };
+module.exports = { get, upsert, remove, upsertScore, getScore };
