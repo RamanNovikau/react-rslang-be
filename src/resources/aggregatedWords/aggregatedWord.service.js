@@ -4,7 +4,6 @@ const getAll = async (userId, group, page, perPage, filter, book) =>
   wordRepo.getAll(userId, group, page, perPage, filter, book);
 
 const getGameWords = async (userId, group, page, filter, count, book) => {
-  console.log(count);
   const words = await wordRepo.getGameWords(
     userId,
     group,
@@ -14,7 +13,6 @@ const getGameWords = async (userId, group, page, filter, count, book) => {
     count,
     book
   );
-  console.log(words);
   return words;
 };
 

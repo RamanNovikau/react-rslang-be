@@ -18,7 +18,6 @@ const refresh = async (userId, tokenId) => {
     throw new AUTHENTICATION_ERROR('Token is expired');
   }
   const user = await userRepo.get(userId);
-  console.log(user);
   const { token, refreshToken } = await getTokens(userId);
   return {
     token,

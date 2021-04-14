@@ -13,8 +13,6 @@ router.get('/', async (req, res) => {
   const group = extractQueryParam(req.query.group);
   const book = extractQueryParam(req.query.book, false);
 
-  console.log(book);
-
   if ((req.query.group && isNaN(group)) || isNaN(page) || isNaN(perPage)) {
     throw new BAD_REQUEST_ERROR(
       'Wrong query parameters: the group, page and words-per-page numbers should be valid integers'
@@ -71,10 +69,6 @@ router.get('/game', async (req, res) => {
   const group = extractQueryParam(req.query.group);
   const book = extractQueryParam(req.query.book, false);
 
-  console.log(book);
-
-  console.log(count);
-
   if ((req.query.group && isNaN(group)) || isNaN(page) || isNaN(count)) {
     throw new BAD_REQUEST_ERROR(
       'Wrong query parameters: the group, page and words-per-page numbers should be valid integers'
@@ -91,7 +85,6 @@ router.get('/game', async (req, res) => {
     count,
     book
   );
-  console.log(words);
   res.status(OK).send(words);
 });
 
@@ -119,7 +112,6 @@ router.get('/fillgame', async (req, res) => {
     count,
     book
   );
-  console.log(words);
   res.status(OK).send(words);
 });
 

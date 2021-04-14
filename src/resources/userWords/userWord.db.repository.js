@@ -27,7 +27,6 @@ const save = async (wordId, userId, userWord) => {
 };
 
 const update = async (wordId, userId, userWord) => {
-  console.log(userWord);
   const updatedWord = await UserWord.findOneAndUpdate(
     { wordId, userId },
     { $set: userWord },

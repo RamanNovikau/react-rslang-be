@@ -10,12 +10,34 @@ const get = async userId => {
   return statistic;
 };
 
-const upsert = async (userId, statistic) =>
-  Statistics.findOneAndUpdate(
+const upsert = async (
+  userId,
+  statistic,
+  learnedWords = 0,
+  todayLearnedWords = 0
+) => {
+  const stat = await Statistics.findOneAndUpdate(
     { userId },
-    { $set: statistic },
+    {
+      $set: statistic
+    },
     { upsert: true, new: true }
   );
+  let t;
+  if (stat && (todayLearnedWords || learnedWords)) {
+    t = await Statistics.findOneAndUpdate(
+      { userId },
+      {
+        $inc: {
+          learnedWords,
+          'optional.today.learnedWordsToday': todayLearnedWords
+        }
+      },
+      { new: true }
+    );
+  }
+  return t || stat;
+};
 
 const remove = async userId => Statistics.deleteOne({ userId });
 

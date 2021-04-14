@@ -30,8 +30,6 @@ const checkAuthentication = (req, res, next) => {
   }
 
   const rawToken = req.headers.authorization;
-
-  console.log(rawToken);
   if (!rawToken) {
     throw new AUTHORIZATION_ERROR();
   }
