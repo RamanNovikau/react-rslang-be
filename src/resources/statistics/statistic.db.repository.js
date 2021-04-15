@@ -17,27 +17,44 @@ const upsert = async (
   learnedWords = 0,
   todayLearnedWords = 0
 ) => {
-  const stat = await Statistics.findOneAndUpdate(
-    { userId },
-    {
-      $set: statistic
-    },
-    { upsert: true, new: true }
-  );
   let t;
-  if (stat && (todayLearnedWords || learnedWords)) {
+  if (todayLearnedWords || learnedWords) {
     t = await Statistics.findOneAndUpdate(
       { userId },
       {
+        $set: {
+          learnedWords: statistic.learnedWords,
+          optional: {
+            today: {
+              date: statistic.optional.today.date,
+              dayLearns: statistic.optional.today.dayLearns,
+              wrongAnswers: statistic.optional.today.wrongAnswers,
+              correctAnswers: statistic.optional.today.correctAnswers,
+              savanna: statistic.optional.today.savanna,
+              sprint: statistic.optional.today.sprint,
+              audioCall: statistic.optional.today.audioCall,
+              knowWords: statistic.optional.today.knowWords
+            },
+            allTime: statistic.optional.allTime
+          }
+        },
         $inc: {
           learnedWords,
           'optional.today.learnedWordsToday': todayLearnedWords
         }
       },
-      { new: true }
+      { upsert: true, new: true }
+    );
+  } else {
+    t = await Statistics.findOneAndUpdate(
+      { userId },
+      {
+        $set: statistic
+      },
+      { upsert: true, new: true }
     );
   }
-  return t || stat;
+  return t;
 };
 
 const remove = async userId => Statistics.deleteOne({ userId });
