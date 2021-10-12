@@ -7,6 +7,8 @@ const get = async (userId, tokenId) => {
     throw new AUTHENTICATION_ERROR('Token is not found!');
   }
 
+  console.log(`token:${token}`);
+
   return token;
 };
 

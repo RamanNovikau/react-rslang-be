@@ -13,6 +13,7 @@ const {
 } = require('../../common/config');
 
 const refresh = async (userId, tokenId) => {
+  console.log(`refresh:${userId}-${tokenId}`);
   const tokenData = await tokenRepo.get(userId, tokenId);
   if (Date.now() > tokenData.expire) {
     throw new AUTHENTICATION_ERROR('Token is expired');
